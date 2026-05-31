@@ -1,0 +1,34 @@
+name: doc-sync
+description: >
+  当 src/ 下的 Python 文件发生变更时，提示检查相关文档是否需要同步更新。
+  适用于 docstring、README 模块说明、docs/ 下的设计文档。
+
+trigger:
+  type: fileChange
+  patterns:
+    - "src/**/*.py"
+  excludePatterns:
+    - "src/**/__pycache__/**"
+    - "src/**/*.pyc"
+
+agent:
+  prompt: |
+    以下文件发生了变更：{changedFiles}
+    
+    请执行文档同步检查：
+    
+    1. **Docstring 检查**
+       - 检查变更函数/类的 docstring 是否与新实现一致
+       - 如参数、返回值、异常有变化，更新对应 docstring
+    
+    2. **模块文档检查**
+       - 查找 docs/ 下是否有描述该模块的文档
+       - 如有，检查模块接口描述是否与实现一致
+    
+    3. **Spec 对照**
+       - 打开 .kiro/specs/ 下相关 spec 文件
+       - 确认已实现的功能是否与需求描述一致
+       - 如发现偏差，在 spec 对应任务下添加备注说明
+    
+    只输出需要更新的内容，无需更新的文件不必提及。
+    如果所有文档都与实现一致，输出"文档检查通过，无需更新。"

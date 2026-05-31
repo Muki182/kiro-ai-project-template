@@ -1,0 +1,46 @@
+name: spec-validate
+description: >
+  当核心实现文件变更时，对照 .kiro/specs/ 中的需求列表逐条验证，
+  输出当前实现与 spec 的一致性报告。
+
+trigger:
+  type: fileChange
+  patterns:
+    - "src/models/**/*.py"
+    - "src/training/**/*.py"
+    - "src/inference/**/*.py"
+    - "src/data/**/*.py"
+  excludePatterns:
+    - "**/__init__.py"
+    - "**/__pycache__/**"
+
+agent:
+  prompt: |
+    以下核心实现文件发生了变更：{changedFiles}
+    
+    请执行 Spec 一致性验证：
+    
+    **第一步：定位关联 Spec**
+    根据变更文件路径，找到 .kiro/specs/ 中最相关的 spec 文件。
+    
+    **第二步：逐条验证需求**
+    对 spec 中每条 REQ-F-XX / REQ-P-XX / REQ-R-XX，判断当前实现是否满足：
+    
+    输出格式：
+    ```
+    ✅ REQ-F-01: [需求描述] — 已满足
+       依据：[简述实现中对应的位置/逻辑]
+    
+    ⚠️  REQ-F-02: [需求描述] — 部分满足
+       缺失：[描述缺少什么]
+       建议：[具体补充措施]
+    
+    ❌ REQ-P-01: [需求描述] — 未满足
+       原因：[描述差距]
+       建议：[具体改进措施]
+    ```
+    
+    **第三步：任务状态建议**
+    根据验证结果，建议 spec 中哪些任务 checkbox 可以勾选为完成。
+    
+    保持输出简洁，每条验证结果不超过 3 行。
