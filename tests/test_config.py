@@ -33,6 +33,10 @@ class TestConfigManagerFromDict:
         assert "a" in cfg
         assert "b" not in cfg
 
+    def test_contains_none_value(self) -> None:
+        cfg = ConfigManager.from_dict({"optional_feature": None})
+        assert "optional_feature" in cfg
+
 
 class TestConfigManagerSet:
     def test_set_simple_key(self) -> None:

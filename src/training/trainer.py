@@ -1,4 +1,9 @@
-"""Training loop and optimizer logic."""
+"""Training loop skeleton and optimizer logic.
+
+Note: This is a scaffold implementation. The training loop computes
+forward passes and loss but does not yet perform gradient-based weight
+updates. Subclass or extend ``Trainer`` to add a real optimizer step.
+"""
 
 from __future__ import annotations
 
@@ -180,6 +185,10 @@ class Trainer:
         """
         if not inputs or not targets:
             raise ValueError("inputs and targets must not be empty")
+        if len(inputs) != len(targets):
+            raise ValueError(
+                f"inputs and targets must have the same length, got {len(inputs)} vs {len(targets)}"
+            )
 
         self._model.train()
         self._epoch += 1

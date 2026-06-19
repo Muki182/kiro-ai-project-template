@@ -126,6 +126,15 @@ class TestTrainer:
         with pytest.raises(ValueError, match="empty"):
             trainer.train_epoch([], [])
 
+    def test_mismatched_lengths_raises(self) -> None:
+        model = SimpleNet(2, 4, 1)
+        trainer = Trainer(model, TrainerConfig())
+        with pytest.raises(ValueError, match="same length"):
+            trainer.train_epoch(
+                [[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]],
+                [[0.0], [0.0]],
+            )
+
     def test_fit_returns_summary(self) -> None:
         model = SimpleNet(2, 4, 1)
         cfg = TrainerConfig(max_epochs=3, batch_size=4)

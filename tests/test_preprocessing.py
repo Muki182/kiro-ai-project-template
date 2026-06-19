@@ -74,6 +74,11 @@ class TestNormalizerFit:
         with pytest.raises(ValueError, match="Non-numeric"):
             Normalizer.fit([{"x": "a"}], fields=["x"])
 
+    def test_fit_constant_values(self) -> None:
+        n = Normalizer.fit([{"x": 5.0}, {"x": 5.0}, {"x": 5.0}], fields=["x"])
+        result = n({"x": 5.0})
+        assert result["x"] == pytest.approx(0.0)
+
     def test_fit_single_record(self) -> None:
         n = Normalizer.fit([{"x": 5.0}], fields=["x"])
         result = n({"x": 5.0})

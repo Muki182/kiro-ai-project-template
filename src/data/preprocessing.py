@@ -105,7 +105,8 @@ class Normalizer:
 
             means[f] = statistics.mean(values)
             if len(values) > 1:
-                stds[f] = statistics.stdev(values)
+                std_val = statistics.stdev(values)
+                stds[f] = std_val if std_val > 0 else 1.0
             else:
                 stds[f] = 1.0
 

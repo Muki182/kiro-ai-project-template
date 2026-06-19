@@ -128,7 +128,8 @@ class ConfigManager:
         return dict(self._data)
 
     def __contains__(self, key: str) -> bool:
-        return self.get(key) is not None
+        sentinel = object()
+        return self.get(key, sentinel) is not sentinel
 
     def __repr__(self) -> str:
         return f"ConfigManager({self._data!r})"
