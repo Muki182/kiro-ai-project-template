@@ -38,7 +38,8 @@ Kiro's spec-driven development model solves both by structurally binding require
 │   │   └── project.md          # Project-level global context (architecture constraints, tech stack, naming conventions)
 │   ├── specs/
 │   │   ├── 01-architecture.md  # Architecture design spec (requirements + task breakdown)
-│   │   └── 02-implementation.md # Implementation phase spec
+│   │   ├── 02-implementation.md # Implementation phase spec
+│   │   └── examples/           # Worked examples (MNIST classifier)
 │   └── hooks/
 │       ├── doc-sync.yml        # Auto-sync docs after code changes
 │       ├── spec-validate.yml   # Validate implementation against spec after changes

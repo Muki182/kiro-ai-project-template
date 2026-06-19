@@ -14,7 +14,7 @@ trigger:
 
 agent:
   prompt: |
-    以下文件发生了变更：{changedFiles}
+    以下文件发生了变更：{{changed_files}}
     
     请执行文档同步检查：
     

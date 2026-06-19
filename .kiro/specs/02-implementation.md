@@ -12,6 +12,8 @@
 本 spec 覆盖 `[模块名称]` 的具体实现细节，包括算法选择、数据结构、边界处理和测试策略。
 架构层面的设计决策参见 `01-architecture.md`。
 
+> **示例参考**：`examples/02-image-classifier-implementation.md` 是本模板的一个已填写示例（MNIST 分类器），可作为编写参考。
+
 ---
 
 ## 实现范围

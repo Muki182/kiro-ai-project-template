@@ -14,6 +14,8 @@
 本 spec 定义 `[模块/系统名称]` 的整体架构，包括核心组件划分、数据流设计和接口规范。
 实现细节由 `02-implementation.md` 覆盖。
 
+> **示例参考**：`examples/01-image-classifier-architecture.md` 是本模板的一个已填写示例（MNIST 分类器），可作为编写参考。
+
 ---
 
 ## 背景与动机

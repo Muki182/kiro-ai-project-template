@@ -17,7 +17,7 @@ trigger:
 
 agent:
   prompt: |
-    以下核心实现文件发生了变更：{changedFiles}
+    以下核心实现文件发生了变更：{{changed_files}}
     
     请执行 Spec 一致性验证：
     
