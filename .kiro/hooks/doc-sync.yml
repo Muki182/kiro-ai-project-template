@@ -7,9 +7,11 @@ trigger:
   type: fileChange
   patterns:
     - "src/**/*.py"
+  # 排除模式参见 .kiro/shared/python-excludes.yml
   excludePatterns:
-    - "src/**/__pycache__/**"
-    - "src/**/*.pyc"
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+    - "**/*.pyo"
 
 agent:
   prompt: |

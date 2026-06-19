@@ -36,10 +36,18 @@ Kiro's spec-driven development model solves both by structurally binding require
 │   ├── specs/
 │   │   ├── 01-architecture.md  # Architecture design spec (requirements + task breakdown)
 │   │   └── 02-implementation.md # Implementation phase spec
-│   └── hooks/
-│       ├── doc-sync.yml        # Auto-sync docs after code changes
-│       ├── spec-validate.yml   # Validate implementation against spec after changes
-│       └── test-trigger.yml    # Trigger test coverage review on interface changes
+│   ├── hooks/
+│   │   ├── doc-sync.yml        # Auto-sync docs after code changes
+│   │   ├── spec-validate.yml   # Validate implementation against spec after changes
+│   │   └── test-trigger.yml    # Trigger test coverage review on interface changes
+│   ├── templates/              # Shared templates for generating specs/hooks
+│   │   ├── spec-template.md    # Unified spec file template
+│   │   └── hook-template.yml   # Unified hook file template
+│   └── shared/                 # Shared configuration
+│       └── python-excludes.yml # Common Python exclude patterns
+├── scripts/
+│   ├── create-spec.sh      # Generate new spec from template
+│   └── create-hook.sh      # Generate new hook from template
 ├── docs/
 │   └── workflow-guide.md       # Workflow usage guide
 └── README.md
@@ -66,7 +74,13 @@ Edit `.kiro/steering/project.md` with your project's architecture constraints, t
 
 ### 4. Write your first spec
 
-Use `.kiro/specs/01-architecture.md` as a format reference. Core elements:
+Use the generator script:
+
+```bash
+./scripts/create-spec.sh 03 "your-module-name" "01-architecture.md" "@yourname"
+```
+
+Or reference `.kiro/templates/spec-template.md` to create manually. Core elements:
 - **Requirements list**: Numbered, verifiable functional requirements
 - **Task breakdown**: Implementation task checklist mapped to requirements
 - **Acceptance criteria**: Completion standard for each requirement

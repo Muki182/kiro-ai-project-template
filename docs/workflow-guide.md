@@ -35,18 +35,24 @@ Kiro spec-driven 模式：
 
 ### 阶段 1：需求澄清 → Spec 编写
 
-**不要直接开始写代码**。先在 Kiro 中对话，让 Agent 帮你把模糊的需求转化为结构化 spec：
+**不要直接开始写代码**。先用生成工具创建 spec 骨架：
+
+```bash
+./scripts/create-spec.sh 03 "视频特征提取" "01-architecture.md" "@yourname"
+```
+
+然后在 Kiro 中对话，让 Agent 帮你把模糊的需求填充到生成的 spec 文件中：
 
 ```
 你：我需要实现一个视频特征提取模块，支持批量处理，性能要满足实时推理要求
 
-Kiro：好的，我来帮你起草 spec。先确认几个问题：
+Kiro：好的，我来帮你填充 spec。先确认几个问题：
       1. "实时推理"的具体指标是？（延迟/吞吐量）
       2. 输入视频的格式和分辨率范围？
       3. 与哪些上下游模块对接？
 ```
 
-对话完成后，让 Agent 直接写入 `.kiro/specs/` 文件。
+对话完成后，Agent 直接更新 `.kiro/specs/` 中已生成的文件。
 
 ### 阶段 2：任务执行
 
@@ -63,11 +69,17 @@ Agent 会自动参照 spec 中的需求约束和验收条件。
 
 ### 阶段 3：变更触发 Hook
 
-每次保存代码变更后，相关 hook 会自动触发：
+每次保存代码变更后，相关 hook 会自动触发（具体行为参见各 hook 文件的 `description` 字段）：
 
 - `doc-sync`：提示更新文档
 - `spec-validate`：对照需求列表验证实现
 - `test-trigger`：（接口变更时）建议补充测试
+
+新建自定义 hook：
+
+```bash
+./scripts/create-hook.sh "your-hook-name" "src/**/*.py" "你的 hook 描述"
+```
 
 **重要**：不要忽略 hook 的输出。Hook 发现的 `⚠️` 和 `❌` 是真实的设计偏差信号。
 

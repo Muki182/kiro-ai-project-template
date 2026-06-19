@@ -1,0 +1,30 @@
+# 共享排除模式 —— Python 项目通用
+# 所有 hook 的 excludePatterns 应引用此文件中的模式，确保一致性。
+# 修改此文件后，请同步更新所有 hook 文件中的 excludePatterns。
+
+# Python 编译产物
+python_compiled:
+  - "**/__pycache__/**"
+  - "**/*.pyc"
+  - "**/*.pyo"
+  - "**/*.pyd"
+
+# Python 打包产物
+python_packaging:
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/*.egg-info/**"
+
+# 虚拟环境
+python_venv:
+  - "**/venv/**"
+  - "**/.venv/**"
+  - "**/env/**"
+
+# 通用 IDE/工具文件
+ide_files:
+  - "**/.idea/**"
+  - "**/.vscode/**"
+  - "**/.mypy_cache/**"
+  - "**/.pytest_cache/**"
+  - "**/.ruff_cache/**"

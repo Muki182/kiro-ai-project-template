@@ -10,9 +10,12 @@ trigger:
     - "src/training/**/*.py"
     - "src/inference/**/*.py"
     - "src/data/**/*.py"
+  # 排除模式参见 .kiro/shared/python-excludes.yml
   excludePatterns:
-    - "**/__init__.py"
     - "**/__pycache__/**"
+    - "**/*.pyc"
+    - "**/*.pyo"
+    - "**/__init__.py"
 
 agent:
   prompt: |
