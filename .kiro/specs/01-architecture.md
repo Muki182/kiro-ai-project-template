@@ -1,6 +1,9 @@
+<!-- 本文件基于 .kiro/templates/spec-template.md 生成，新建 spec 请使用 scripts/create-spec.sh -->
+
 # Spec 01: 系统架构设计
 
 **状态**：`[ 草稿 / 评审中 / 已确认 / 实现中 / 已完成 ]`
+**父级 Spec**：`无`
 **创建日期**：`YYYY-MM-DD`
 **最后更新**：`YYYY-MM-DD`
 **负责人**：`@username`

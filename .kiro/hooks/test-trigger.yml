@@ -11,6 +11,11 @@ trigger:
     - "src/**/schema.py"
     - "src/**/types.py"
     - "**/*.proto"
+  # 排除模式参见 .kiro/shared/python-excludes.yml
+  excludePatterns:
+    - "**/__pycache__/**"
+    - "**/*.pyc"
+    - "**/*.pyo"
 
 agent:
   prompt: |
