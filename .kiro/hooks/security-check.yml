@@ -1,0 +1,68 @@
+name: security-check
+description: >
+  When source code changes, check for common security vulnerabilities:
+  hardcoded secrets, unsafe deserialization, SQL injection, missing input
+  validation, overly permissive CORS, and exposed debug endpoints.
+
+trigger:
+  type: fileChange
+  patterns:
+    - "src/**/*.py"
+    - "config/**/*.yaml"
+    - "config/**/*.yml"
+    - "*.py"
+  excludePatterns:
+    - "**/__pycache__/**"
+    - "**/tests/**"
+    - "**/*.pyc"
+
+agent:
+  prompt: |
+    The following files have changed: {changedFiles}
+
+    Perform a security review covering these categories:
+
+    **1. Hardcoded Secrets**
+    - API keys, tokens, passwords, connection strings
+    - Any string that looks like a credential (high entropy, key-like patterns)
+    - Suggest using environment variables or config files (not in VCS) instead
+
+    **2. Injection Vulnerabilities**
+    - SQL injection: raw string formatting in queries
+    - Command injection: unsanitized input in os.system/subprocess
+    - Template injection: user input in format strings
+
+    **3. Unsafe Deserialization**
+    - pickle.load / yaml.load without SafeLoader
+    - eval() / exec() with user-controlled input
+
+    **4. Input Validation**
+    - API endpoints accepting unvalidated input
+    - Missing type checks or bounds validation
+    - Path traversal via unsanitized file paths
+
+    **5. Network Security**
+    - CORS configured with allow_origins=["*"] in production
+    - Debug mode enabled (DEBUG=True, app.debug=True)
+    - Exposed admin/debug endpoints without authentication
+
+    **6. Authentication & Authorization**
+    - Endpoints missing auth decorators/middleware
+    - Hardcoded admin credentials
+    - Missing rate limiting on sensitive endpoints
+
+    Output format:
+    ```
+    🔴 CRITICAL: [category] — [file:line]
+       Issue: [description]
+       Fix: [specific remediation]
+
+    🟡 WARNING: [category] — [file:line]
+       Issue: [description]
+       Fix: [specific remediation]
+
+    🟢 INFO: [category]
+       [observation or best practice suggestion]
+    ```
+
+    If no security issues are found, output "Security check passed. No issues detected."
