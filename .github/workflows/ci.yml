@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install tooling
+        run: pip install ruff mypy pytest
+
+      - name: Ruff (lint)
+        run: ruff check .
+
+      - name: Mypy (type check)
+        run: mypy src
+
+      - name: Pytest
+        run: |
+          set +e
+          pytest
+          code=$?
+          set -e
+          # Exit code 5 == "no tests collected"; expected for the empty scaffold.
+          if [ "$code" -eq 5 ]; then
+            echo "No tests collected yet (template scaffold) — skipping."
+            exit 0
+          fi
+          exit "$code"

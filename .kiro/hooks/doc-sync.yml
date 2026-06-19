@@ -7,13 +7,14 @@ trigger:
   type: fileChange
   patterns:
     - "src/**/*.py"
+    - "scripts/**/*.py"
   excludePatterns:
-    - "src/**/__pycache__/**"
-    - "src/**/*.pyc"
+    - "**/__pycache__/**"
+    - "**/*.pyc"
 
 agent:
   prompt: |
-    以下文件发生了变更：{changedFiles}
+    以下文件发生了变更：{{changed_files}}
     
     请执行文档同步检查：
     

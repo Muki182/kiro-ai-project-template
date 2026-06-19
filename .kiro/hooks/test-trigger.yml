@@ -10,11 +10,11 @@ trigger:
     - "src/**/*_api.py"
     - "src/**/schema.py"
     - "src/**/types.py"
-    - "**/*.proto"
+    - "src/**/*.proto"
 
 agent:
   prompt: |
-    接口定义文件发生了变更：{changedFiles}
+    接口定义文件发生了变更：{{changed_files}}
     
     请执行测试覆盖审查：
     

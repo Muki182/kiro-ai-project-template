@@ -120,6 +120,15 @@ A：调整 `trigger.patterns` 的粒度。例如，将 `spec-validate` 限制为
 你认为"完成了一个完整功能"时手动触发，而不是每次文件保存都触发。
 可以将 `type: fileChange` 改为 `type: manual`。
 
+**Q：如何停用或重新启用某个 hook？**
+
+A：按影响从小到大，有三种方式：
+1. **改为手动触发**：将 `trigger.type` 从 `fileChange` 改为 `manual`，hook 仅在你主动调用时运行，自动触发逻辑随时可恢复。
+2. **重命名文件**：把 `xxx.yml` 改名为 `xxx.yml.disabled`，Kiro 只加载 `.yml` 文件，改回来即可重新启用。
+3. **彻底移除**：删除对应的 `.kiro/hooks/*.yml` 文件。
+
+团队协作时推荐方式 1 或 2，保留配置便于其他成员了解历史设置。
+
 **Q：Spec 写得太详细，反而花了很多时间？**
 
 A：spec 的详细程度应与模块复杂度匹配。简单工具函数只需 5-10 行 spec，
