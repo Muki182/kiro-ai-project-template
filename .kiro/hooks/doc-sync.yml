@@ -7,9 +7,10 @@ trigger:
   type: fileChange
   patterns:
     - "src/**/*.py"
+    - "scripts/**/*.py"
   excludePatterns:
-    - "src/**/__pycache__/**"
-    - "src/**/*.pyc"
+    - "**/__pycache__/**"
+    - "**/*.pyc"
 
 agent:
   prompt: |

@@ -10,7 +10,7 @@ trigger:
     - "src/**/*_api.py"
     - "src/**/schema.py"
     - "src/**/types.py"
-    - "**/*.proto"
+    - "src/**/*.proto"
 
 agent:
   prompt: |

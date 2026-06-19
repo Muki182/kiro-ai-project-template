@@ -10,6 +10,7 @@ trigger:
     - "src/training/**/*.py"
     - "src/inference/**/*.py"
     - "src/data/**/*.py"
+    - "src/utils/**/*.py"
   excludePatterns:
     - "**/__init__.py"
     - "**/__pycache__/**"
