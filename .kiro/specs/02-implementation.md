@@ -57,6 +57,66 @@ def key_function(param: Type) -> ReturnType:
 | 超出内存限制 | 触发分块处理，降低并行度 |
 | `[其他边界情况]` | `[处理方式]` |
 
+### 错误处理实现
+
+> 对照 `01-architecture.md` 中的错误处理策略，实现本模块的具体错误处理逻辑。
+
+**异常转换规则**：
+
+| 原始异常 | 转换为 | 触发条件 | 日志级别 |
+|---------|-------|---------|---------|
+| `FileNotFoundError` | `DataError` | 数据文件缺失 | `ERROR` |
+| `ConnectionError` / `TimeoutError` | `ExternalServiceError` | 外部服务不可达 | `ERROR` |
+| `json.JSONDecodeError` | `ConfigError` | 配置文件格式非法 | `ERROR` |
+| `[其他原始异常]` | `[对应项目异常]` | `[条件]` | `[级别]` |
+
+**错误传播实现**：
+
+```python
+# ✅ 异常转换 + 上下文保留
+def load_config(path: str) -> dict:
+    try:
+        with open(path) as f:
+            return yaml.safe_load(f)
+    except FileNotFoundError as e:
+        raise ConfigError(f"配置文件不存在: {path}") from e
+    except yaml.YAMLError as e:
+        raise ConfigError(f"配置文件格式错误: {path}") from e
+
+# ✅ 可恢复错误 → 降级 + 日志
+def fetch_with_fallback(primary_url: str, fallback_url: str) -> Response:
+    try:
+        return http_client.get(primary_url, timeout=5)
+    except (ConnectionError, TimeoutError) as e:
+        logger.warning("主服务不可达，切换到备用: %s", e)
+        return http_client.get(fallback_url, timeout=10)
+```
+
+**需要避免的反模式**：
+
+```python
+# ❌ 反模式 1：静默吞没 — 调用方无法感知失败
+def get_data(key):
+    try:
+        return cache.get(key)
+    except Exception:
+        return None  # 调用方不知道这是"未找到"还是"服务挂了"
+
+# ❌ 反模式 2：丢弃原始异常链
+def process(data):
+    try:
+        return transform(data)
+    except ValueError:
+        raise DataError("转换失败")  # 缺少 `from e`，丢失原始 traceback
+
+# ❌ 反模式 3：过宽捕获 — 掩盖了编程错误
+def save(data):
+    try:
+        db.insert(data)
+    except Exception as e:  # TypeError/AttributeError 也被吞掉了
+        logger.error("保存失败: %s", e)
+```
+
 ---
 
 ## 测试策略
@@ -80,11 +140,40 @@ class Test[ClassName]:
         ...
 ```
 
+### 错误路径测试
+
+```python
+# tests/test_[module_name]_errors.py
+
+class Test[ClassName]ErrorHandling:
+    def test_[功能]_外部服务不可达时抛出ExternalServiceError(self):
+        """错误传播：外部依赖失败时不应被静默吞没"""
+        with pytest.raises(ExternalServiceError) as exc_info:
+            ...
+        assert exc_info.value.__cause__ is not None  # 验证异常链保留
+
+    def test_[功能]_无效输入时抛出具体异常而非通用Exception(self):
+        """异常精确性：捕获的异常类型应足够具体"""
+        with pytest.raises(DataError):  # 不应是 Exception 或 ValueError
+            ...
+
+    def test_[功能]_降级路径返回有效结果(self):
+        """降级行为：主路径失败时，降级路径应返回可用结果"""
+        ...
+
+    def test_[功能]_错误日志包含排障上下文(self, caplog):
+        """日志质量：错误日志应包含足够的上下文信息"""
+        with caplog.at_level(logging.ERROR):
+            ...
+        assert "[关键参数值]" in caplog.text
+```
+
 ### 集成测试
 
 - [ ] 与 `[上游模块]` 的接口联调
 - [ ] 端到端 pipeline 跑通验证
 - [ ] 显存占用监控测试
+- [ ] 错误传播链路验证：模拟底层异常，确认顶层收到正确的项目自定义异常
 
 ---
 
@@ -113,6 +202,9 @@ class Test[ClassName]:
 
 - [ ] 所有任务 checkbox 勾选
 - [ ] 单元测试覆盖率 >= 80%
+- [ ] 错误路径测试覆盖所有异常转换规则和降级行为
+- [ ] 无裸 `except:` 块，无静默吞没（`ruff` 规则 `E722` / `B001` 通过）
+- [ ] 所有 `raise ... from` 链保留完整（grep 验证无孤立 `raise CustomError(...)` 缺少 `from`）
 - [ ] 性能测试满足 REQ-P-01、REQ-P-02
 - [ ] mypy 类型检查通过（zero errors）
 - [ ] ruff 代码风格检查通过
